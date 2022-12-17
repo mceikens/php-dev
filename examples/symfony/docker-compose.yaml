@@ -1,0 +1,57 @@
+version: '3.9'
+services:
+  db:
+    image: mariadb:latest
+    volumes:
+      - db:/var/lib/mysql
+    ports:
+      - 3306:3306
+    environment:
+      MYSQL_DATABASE: "dev"
+      MYSQL_USER: "dev"
+      MYSQL_PASSWORD: "dev"
+      MYSQL_ROOT_PASSWORD: "root"
+    restart: on-failure
+    command: [ 'mysqld', '--character-set-server=utf8mb4', '--collation-server=utf8mb4_unicode_ci' ]
+    networks:
+      - internal
+  php:
+    image: mceikens/php-dev:7.4
+    networks:
+      - internal
+    volumes:
+      - ./:/usr/share/nginx/html/app:rw,cached
+  nginx:
+    image: nginx:latest
+    networks:
+      - default
+      - internal
+    volumes:
+      - ./config/nginx/default.conf:/etc/nginx/conf.d/default.conf
+      - ./:/usr/share/nginx/html/app:rw,cached
+    ports:
+      - 8080:80
+  mail:
+    image: mailhog/mailhog
+    ports:
+      - 8025:8025
+      - 1025:1025
+    environment:
+      - VIRTUAL_HOST=mail.localhost
+      - VIRTUAL_PORT=8025
+  redis:
+    image: redis:latest
+    restart: on-failure
+    ports:
+      - '6379:6379'
+    command: redis-server --save 20 1 --loglevel warning --requirepass eYVX7EwVmmxKPCDmwMtyKVge8oLd2t81
+    volumes:
+      - cache:/data
+networks:
+  internal:
+    driver: bridge
+volumes:
+  cache:
+    driver: local
+  db:
+    driver: local
