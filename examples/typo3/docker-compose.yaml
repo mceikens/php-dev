@@ -16,7 +16,7 @@ services:
     networks:
       - internal
   php:
-    image: mceikens/php-dev:7.4
+    image: mceikens/php-dev:8.0
     networks:
       - internal
     volumes:
