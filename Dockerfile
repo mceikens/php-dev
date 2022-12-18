@@ -86,14 +86,14 @@ RUN docker-php-ext-enable apcu intl redis
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 RUN composer --version
 
-RUN yes | pecl install xdebug-2.9.0 \
-    && echo "zend_extension=xdebug" > /usr/local/etc/php/conf.d/xdebug.ini \
-    && echo "xdebug.mode=develop,debug" >> /usr/local/etc/php/conf.d/xdebug.ini \
-    && echo "xdebug.discover_client_host=1" >> /usr/local/etc/php/conf.d/xdebug.ini \
-    && echo "xdebug.start_with_request=yes" >> /usr/local/etc/php/conf.d/xdebug.ini
+RUN yes | pecl install xdebug-3.1.5
+
 RUN usermod -u 1000 www-data
 RUN groupmod -g 1000 www-data
-COPY ./php.ini /usr/local/etc/php/conf.d/custom.ini
+
+COPY ./conf.d/custom-php.ini /usr/local/etc/php/conf.d/custom-php.ini
+COPY ./conf.d/custom-xdebug.ini /usr/local/etc/php/conf.d/custom-xdebug.ini
+
 COPY . /usr/share/nginx/html/app
 RUN chown -R 1000.1000 /usr/share/nginx/html/
 
