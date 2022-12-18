@@ -79,7 +79,7 @@ RUN docker-php-ext-install -j$(nproc) gd shmop \
                           zip \
                           sockets
 
-RUN pecl install apcu-5.1.21
+RUN pecl install apcu-5.1.22
 RUN pecl install redis
 RUN docker-php-ext-enable apcu intl redis
 
